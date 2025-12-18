@@ -1,65 +1,62 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Container, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import axios from 'axios';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { Box, Button, CircularProgress, Container, Divider, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import axios from 'axios';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axiosinstance from '../../Api/axiosInstance';
 
-export default function Login() {
+export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState();
   const navigate = useNavigate();
-  const loginSchema = yup.object({
-    email: yup.string().email('Invalid email format').required('Email is required'),
-    password: yup.string()
+  const resetPasswordSchema = yup.object({
+    newPassword: yup.string()
       .min(8, 'Password must be at least 8 characters')
       .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
       .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
       .matches(/[0-9]/, 'Password must contain at least one number')
       .matches(/[@$@!%*?&_]/, 'Password must contain at least one special character')
       .required('Password is required'),
-
   });
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
-    resolver: yupResolver(loginSchema),
-    mode: 'onBlur'
-  });
-  const login = async (userInfo) => {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm(
+    {
+      resolver: yupResolver(resetPasswordSchema),
+      mode: 'onBlur'
 
+    });
+  const resetPassword = async (userInfo) => {
+    userInfo.email = localStorage.getItem('email');
     try {
-      const response = await axiosinstance.post(`/Auth/Account/Login`, userInfo);
-      // console.log(response.data.accessToken)
-      localStorage.setItem('token', response.data.accessToken);
+      const response = await axiosinstance.post(`/Auth/Account/ResetPassword`, userInfo);
+      console.log(response)
       if (response.status === 200) {
-        navigate('/home');
+        navigate('/auth/login');
       }
     } catch (error) {
       console.error("Error registering user:", error);
-      setServerError(error.response.data.message);
+      setServerError("Invalid code or other error occurred");
     }
   }
   return (
     <Box sx={{ bgcolor: "#90caf9", display: "flex", justifyContent: "center", alignItems: "center" }} height='100vh' width='inherit'>
 
       <Container sx={{ py: 5, bgcolor: "#cfd8dc", borderRadius: 5, boxShadow: 3 }}  >
-        <Typography variant="h4" component='h1' textAlign="center">Login</Typography>
+        <Typography variant="h4" component='h1' textAlign="center">Reset Password</Typography>
         {serverError ? <Typography mt={1} variant="body2" color="#e91e63" textAlign="center">{serverError}</Typography> : null}
-        <Box component='form' onSubmit={handleSubmit(login)} width='inherit' mt={5} mb={5} px={5} display="flex" flexDirection="column" alignItems="center" gap={2}>
+        <Box component='form' onSubmit={handleSubmit(resetPassword)} width='inherit' mt={5} mb={2} px={5} display="flex" flexDirection="column" alignItems="center" gap={2}>
 
-          <TextField {...register('email')} label="Email" variant="outlined" fullWidth autoComplete='off'
-            error={errors?.email} helperText={errors?.email?.message} />
           <TextField
             autoComplete='off'
-            {...register('password')}
+            {...register('newPassword')}
             type={showPassword ? 'text' : 'password'}
-            label="Password"
+            label="New Password"
             variant="outlined"
             fullWidth
-            error={!!errors?.password}
-            helperText={errors?.password?.message}
+            error={!!errors?.newPassword}
+            helperText={errors?.newPassword?.message}
             slotProps={{
               input: {
                 endAdornment: (
@@ -78,16 +75,16 @@ export default function Login() {
               },
             }}
           />
+          <TextField {...register('code')} label="Code" variant="outlined" fullWidth autoComplete='off' />
 
-          <Typography textAlign='right' width='100%' variant='body2' color='primary'><Link to='/auth/send-code'>Forgot Password?</Link></Typography>
           <Button type='submit' variant="contained" color="success" >
-            {isSubmitting ? <CircularProgress color='inherit' /> : "Login"}
+            {isSubmitting ? <CircularProgress color='inherit' /> : "Reset Password"}
           </Button>
         </Box>
-        <Typography textAlign='center' variant='body2'>Dont't have an account? <Link to='/auth/register'>Register here</Link></Typography>
 
+        <Divider sx={{ width: '50%', mx: 'auto' }}>or</Divider>
+        ْ<Typography variant='body1' textAlign='center'>Go to <Link to='/auth/login'>login page</Link> </Typography>
       </Container>
     </Box>
   )
 }
-
