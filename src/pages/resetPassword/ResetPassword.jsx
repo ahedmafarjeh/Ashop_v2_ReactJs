@@ -30,8 +30,8 @@ export default function ResetPassword() {
   const resetPassword = async (userInfo) => {
     userInfo.email = localStorage.getItem('email');
     try {
-      const response = await axiosinstance.post(`/Auth/Account/ResetPassword`, userInfo);
-      console.log(response)
+      const response = await axiosinstance.patch(`/Auth/Account/ResetPassword`, userInfo);
+      // console.log(response)
       if (response.status === 200) {
         navigate('/auth/login');
       }

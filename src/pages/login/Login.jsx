@@ -7,8 +7,10 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup';
 import axiosinstance from '../../Api/axiosInstance';
+import useAuthStore from '../../Store/useAuthStore';
 
 export default function Login() {
+  const Login = useAuthStore((state) => state.login);
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState();
   const navigate = useNavigate();
@@ -32,7 +34,8 @@ export default function Login() {
     try {
       const response = await axiosinstance.post(`/Auth/Account/Login`, userInfo);
       // console.log(response.data.accessToken)
-      localStorage.setItem('token', response.data.accessToken);
+      // localStorage.setItem('token', response.data.accessToken);
+      Login(response.data.accessToken);
       if (response.status === 200) {
         navigate('/home');
       }

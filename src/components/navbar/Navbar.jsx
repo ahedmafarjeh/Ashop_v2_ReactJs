@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -14,38 +14,35 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material';
+import useAuthStore from '../../Store/useAuthStore';
 
 
 const drawerWidth = 240;
-const pages = ['home','cart', 'login', 'register'];
+const pages = ['home', 'cart', 'login', 'register'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export default function Navbar(props) {
-    const { window } = props;
+  const { window } = props;
+  const navigate = useNavigate();
   const currentPath = useLocation();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-    console.log(currentPath.pathname)
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+  const token = useAuthStore((state) => state.token);
+  const Logout = useAuthStore((state) => state.logout);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+  const signout = () => {
+    Logout();
+    navigate('auth/login');
+  }
+  const ss = () => {
+    console.log("test")
+  }
+  
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
@@ -53,68 +50,138 @@ export default function Navbar(props) {
       </Typography>
       <Divider />
       <List>
-        {pages.map((item) => (
-          <ListItem  key={item} disablePadding>
-            <ListItemButton component={Link} to={item == 'login' || item == 'register' ? `auth/${item}` : `/${item}`}  sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+
+        <ListItem disablePadding sx={{ display: 'block' }}>
+          {token != null ?
+
+            <>
+              <ListItemButton component={Link} to={`/home`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/home` ? '#c62828' : 'inherit' }}>
+                <ListItemText primary='Home' />
+              </ListItemButton>
+
+              <ListItemButton component={Link} to={`/cart`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/cart` ? '#c62828' : 'inherit' }}>
+                <ListItemText primary='Cart' />
+              </ListItemButton>
+
+
+              <ListItemButton onClick={signout} sx={{ textAlign: 'center' }}>
+                <ListItemText primary='Logout' />
+              </ListItemButton>
+            </>
+            :
+            // <ListItemButton component={Link} to={item == 'login' || item == 'register' ? `auth/${item}` : `/${item}`}  sx={{ textAlign: 'center' }}>
+            <>
+              <ListItemButton component={Link} to={`auth/login`} sx={{ textAlign: 'center' }}>
+                <ListItemText primary='Login' />
+              </ListItemButton>
+
+              <ListItemButton component={Link} to={`auth/register`} sx={{ textAlign: 'center' }}>
+                <ListItemText primary='Register' />
+              </ListItemButton>
+            </>
+          }
+
+        </ListItem>
+
       </List>
     </Box>
   );
-  const container = window !== undefined ? () => window().document.body : undefined;
+
+
+
+
+
   return (
 
-    <Box sx={{ display: 'flex' }}>  
+    <Box sx={{ display: 'flex' }}>
       <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: 'flex',
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              mx:'auto'
-            }}
-          >
-            ASHOP
-          </Typography>
-    
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, justifyContent: 'center' }}>
-            {pages.map((page) => 
-            <Button
-              component={Link} 
-              to={page == 'login' || page == 'register' ? `auth/${page}` : `/${page}`}
-              onClick={handleCloseNavMenu}
-              sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/${page}` ? '#c62828' : 'inherit' }}
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}
             >
-              {page}
-            </Button>
-            )}
-            
-          </Box>
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: 'flex',
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                mx: 'auto'
+              }}
+            >
+              ASHOP
+            </Typography>
 
-        </Toolbar>
-      </Container>
-    </AppBar>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, justifyContent: 'center' }}>
+              {token != null ?
+                <>
+                  <Button
+                    component={Link}
+                    to={'/home'}
+                    // onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/home` ? '#c62828' : 'inherit' }}
+                  >
+                    Home
+                  </Button>
+
+                  <Button
+                    component={Link}
+                    to={`/cart`}
+                    // onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/cart` ? '#c62828' : 'inherit' }}
+                  >
+                    Cart
+                  </Button>
+
+                  <Button
+
+                    onClick={signout}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block' }}
+                  >
+                    Logout
+                  </Button>
+                </>
+                :
+                <>
+                  <Button
+                    component={Link}
+                    to={`auth/login`}
+                    onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/login` ? '#c62828' : 'inherit' }}
+                  >
+                    Login
+                  </Button>
+
+                  <Button
+                    component={Link}
+                    to={`auth/register`}
+                    onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/register` ? '#c62828' : 'inherit' }}
+                  >
+                    Register
+                  </Button>
+                </>
+
+              }
+
+            </Box>
+
+          </Toolbar>
+        </Container>
+      </AppBar>
 
 
       <nav>
@@ -137,7 +204,7 @@ export default function Navbar(props) {
 
 
     </Box>
-  
-    
+
+
   )
 }
