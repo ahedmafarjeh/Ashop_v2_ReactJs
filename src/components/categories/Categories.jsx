@@ -1,33 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import axiosinstance from '../../Api/axiosInstance';
 import { Alert, CircularProgress, Container, Grid, Link, Paper, Typography } from '@mui/material';
 import {Link as routerLink} from 'react-router-dom'
-import {  useQuery } from '@tanstack/react-query';
+import { useCategories } from '../../hooks/useCategories';
+
 
 export default function Categories() {
-  // const [categories, setCategories] = useState([]);
-  const fetchCategories = async () =>{
-    const response = await axiosinstance.get(`/Categories`);
-    return response.data;
-  }
-  const {isLoading,isError,data} = useQuery({
-    queryKey:['categories'],
-    // cash for 5 min = 5 * 60 sec * 1000 ms
-    staleTime:5 * 60 * 1000, 
-    queryFn: fetchCategories
-  });
-  // const getCategories = async () =>{
-  //   try {
-  //     const response = await axiosinstance.get(`/Categories`);
-  //     // console.log(response)
-  //     setCategories(response.data);
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  // useEffect(() =>{
-  //   getCategories();
-  // },[]);
+  const {isLoading, isError, data} = useCategories();
+  console.log(data)
   if (isLoading){
     return <CircularProgress />
   }

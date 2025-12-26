@@ -159,7 +159,7 @@ export default function Navbar(props) {
                   <Button
                     component={Link}
                     to={`auth/login`}
-                    onClick={handleCloseNavMenu}
+                    // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/login` ? '#c62828' : 'inherit' }}
                   >
                     Login
@@ -168,7 +168,7 @@ export default function Navbar(props) {
                   <Button
                     component={Link}
                     to={`auth/register`}
-                    onClick={handleCloseNavMenu}
+                    // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/register` ? '#c62828' : 'inherit' }}
                   >
                     Register

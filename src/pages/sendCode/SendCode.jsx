@@ -1,34 +1,23 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Box, Button, CircularProgress, Container, Divider, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-import axiosinstance from '../../Api/axiosInstance';
+
+import { SendCodeSchema } from '../../validation/SendCodeValidation';
+import { useSendCode } from '../../hooks/useSendCode';
 
 export default function SendCode() {
-  const [serverError, setServerError] = useState();
-  const navigate = useNavigate();
-  const SendCodeSchema = yup.object({
-    email: yup.string().email('Invalid email format').required('Email is required'),
-  });
+  const { serverError, sendCodeMutation } = useSendCode();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(SendCodeSchema),
     mode: 'onBlur'
   });
   const sendCode = async (userInfo) => {
     localStorage.setItem('email', userInfo.email);
-    try {
-      const response = await axiosinstance.post(`/Auth/Account/SendCode`, userInfo);
-      // console.log(response)
-      if (response.status === 200) {
-        navigate('/auth/reset-password');
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      setServerError(error.response.data.message);
-    }
+    await sendCodeMutation.mutateAsync(userInfo);
+
   }
   return (
     <Box sx={{ bgcolor: "#90caf9", display: "flex", justifyContent: "center", alignItems: "center" }} height='100vh' width='inherit'>

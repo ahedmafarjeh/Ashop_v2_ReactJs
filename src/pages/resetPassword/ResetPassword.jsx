@@ -7,20 +7,13 @@ import { Box, Button, CircularProgress, Container, Divider, IconButton, InputAdo
 import axios from 'axios';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import axiosinstance from '../../Api/axiosInstance';
+import { resetPasswordSchema } from '../../validation/ResetPassword';
+import { useResetPassword } from '../../hooks/useResetPassword';
 
 export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState();
-  const navigate = useNavigate();
-  const resetPasswordSchema = yup.object({
-    newPassword: yup.string()
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[@$@!%*?&_]/, 'Password must contain at least one special character')
-      .required('Password is required'),
-  });
+  const {serverError, resetPasswordMutation} = useResetPassword();
+  
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm(
     {
       resolver: yupResolver(resetPasswordSchema),
@@ -29,16 +22,9 @@ export default function ResetPassword() {
     });
   const resetPassword = async (userInfo) => {
     userInfo.email = localStorage.getItem('email');
-    try {
-      const response = await axiosinstance.patch(`/Auth/Account/ResetPassword`, userInfo);
-      // console.log(response)
-      if (response.status === 200) {
-        navigate('/auth/login');
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      setServerError("Invalid code or other error occurred");
-    }
+    await resetPasswordMutation.mutateAsync(userInfo);
+    localStorage.removeItem('email');
+  
   }
   return (
     <Box sx={{ bgcolor: "#90caf9", display: "flex", justifyContent: "center", alignItems: "center" }} height='100vh' width='inherit'>

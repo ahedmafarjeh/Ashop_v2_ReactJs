@@ -8,41 +8,31 @@ import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup';
 import axiosinstance from '../../Api/axiosInstance';
 import useAuthStore from '../../Store/useAuthStore';
+import { loginSchema } from '../../validation/LoginValidation';
+import { useLogin } from '../../hooks/useLogin';
 
 export default function Login() {
   const Login = useAuthStore((state) => state.login);
   const [showPassword, setShowPassword] = useState(false);
-  const [serverError, setServerError] = useState();
-  const navigate = useNavigate();
-  const loginSchema = yup.object({
-    email: yup.string().email('Invalid email format').required('Email is required'),
-    password: yup.string()
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[@$@!%*?&_]/, 'Password must contain at least one special character')
-      .required('Password is required'),
-
-  });
+  const {serverError, loginMutation} = useLogin();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(loginSchema),
     mode: 'onBlur'
   });
   const login = async (userInfo) => {
-
-    try {
-      const response = await axiosinstance.post(`/Auth/Account/Login`, userInfo);
-      // console.log(response.data.accessToken)
-      // localStorage.setItem('token', response.data.accessToken);
-      Login(response.data.accessToken);
-      if (response.status === 200) {
-        navigate('/home');
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      setServerError(error.response.data.message);
-    }
+    await loginMutation.mutateAsync(userInfo);
+    // try {
+    //   const response = await axiosinstance.post(`/Auth/Account/Login`, userInfo);
+    //   // console.log(response.data.accessToken)
+    //   // localStorage.setItem('token', response.data.accessToken);
+    //   Login(response.data.accessToken);
+    //   if (response.status === 200) {
+    //     navigate('/home');
+    //   }
+    // } catch (error) {
+    //   console.error("Error registering user:", error);
+    //   setServerError(error.response.data.message);
+    // }
   }
   return (
     <Box sx={{ bgcolor: "#90caf9", display: "flex", justifyContent: "center", alignItems: "center" }} height='100vh' width='inherit'>
