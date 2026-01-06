@@ -15,7 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Container } from '@mui/material';
+import { Avatar, Container } from '@mui/material';
 import useAuthStore from '../../Store/useAuthStore';
 
 
@@ -28,6 +28,7 @@ export default function Navbar(props) {
   const currentPath = useLocation();
   const token = useAuthStore((state) => state.token);
   const Logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const container = window !== undefined ? () => window().document.body : undefined;
 
@@ -41,7 +42,7 @@ export default function Navbar(props) {
   const ss = () => {
     console.log("test")
   }
-  
+
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -178,7 +179,15 @@ export default function Navbar(props) {
               }
 
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {user && token ?
+                <>
+                  <Typography variant="body1" sx={{ textTransform: 'capitalize' }}>{user.name}</Typography>
+                  <Avatar alt={user.name} >{user.name.charAt(0).toUpperCase()}</Avatar>
+                </>
+                : null}
 
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

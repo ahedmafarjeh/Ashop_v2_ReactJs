@@ -7,6 +7,7 @@ import Register from "./pages/register/Register";
 import Cart from "./pages/cart/Cart";
 import SendCode from "./pages/sendCode/SendCode";
 import ResetPassword from "./pages/resetPassword/ResetPassword";
+import ProtectedRouter from "./ProtectedRouter";
 
 
 const router = new createBrowserRouter([
@@ -15,18 +16,22 @@ const router = new createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        path:"home",
-        element: <Home />      
+        path: "home",
+        element: <Home />
       },
       {
-        path:"cart",
-        element: <Cart />
+        path: "cart",
+        element:
+          <ProtectedRouter>
+            <Cart />
+          </ProtectedRouter>
+
       }
     ]
   },
   {
     path: "/auth",
-    element:<AuthLayout />,
+    element: <AuthLayout />,
     children: [
       {
         path: "login",

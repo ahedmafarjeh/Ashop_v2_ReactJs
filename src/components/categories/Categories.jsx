@@ -6,7 +6,7 @@ import { useCategories } from '../../hooks/useCategories';
 
 export default function Categories() {
   const {isLoading, isError, data} = useCategories();
-  console.log(data)
+  // console.log(data)
   if (isLoading){
     return <CircularProgress />
   }
