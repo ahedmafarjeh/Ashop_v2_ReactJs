@@ -8,6 +8,7 @@ import Cart from "./pages/cart/Cart";
 import SendCode from "./pages/sendCode/SendCode";
 import ResetPassword from "./pages/resetPassword/ResetPassword";
 import ProtectedRouter from "./ProtectedRouter";
+import ProductDetails from "./pages/products/ProductDetails";
 
 
 const router = new createBrowserRouter([
@@ -15,6 +16,10 @@ const router = new createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
+      {
+        index: true,
+        element: <Home />
+      },
       {
         path: "home",
         element: <Home />
@@ -26,6 +31,10 @@ const router = new createBrowserRouter([
             <Cart />
           </ProtectedRouter>
 
+      },
+      {
+        path: "products/:id",
+        element: <ProductDetails />
       }
     ]
   },

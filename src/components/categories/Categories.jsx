@@ -16,8 +16,8 @@ export default function Categories() {
 return (
     <Container sx={{my:5}} maxWidth='lg'>
       <Grid container spacing={2}>
-      {data?.map((cat) =>
-        <Grid size={{xs:12, sm:6, md:4}}>
+      {data.response?.map((cat) =>
+        <Grid key={cat.id} size={{xs:12, sm:6, md:4}}>
           <Link component={routerLink}   underline='none'>
           <Paper elevation={3} sx={{textAlign:'center',py:2, bgcolor:'#90caf9',
           transition:'transform 0.2s',

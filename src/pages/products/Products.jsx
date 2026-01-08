@@ -15,9 +15,9 @@ export default function Products() {
   return (
     <Container sx={{ my: 5 }} maxWidth='lg'>
       <Grid container spacing={2}>
-        {data?.map((product) =>
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Link component={routerLink} underline='none'>
+        {data.response.data?.map((product) =>
+          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Link component={routerLink} to={`/products/${product.id}`} underline='none'>
               <Card sx={{
                  transition: 'transform 0.2s',
                 "&:hover": {

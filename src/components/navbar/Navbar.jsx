@@ -56,7 +56,7 @@ export default function Navbar(props) {
           {token != null ?
 
             <>
-              <ListItemButton component={Link} to={`/home`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/home` ? '#c62828' : 'inherit' }}>
+              <ListItemButton component={Link} to={`/home`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}>
                 <ListItemText primary='Home' />
               </ListItemButton>
 
@@ -133,7 +133,7 @@ export default function Navbar(props) {
                     component={Link}
                     to={'/home'}
                     // onClick={handleCloseNavMenu}
-                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/home` ? '#c62828' : 'inherit' }}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}
                   >
                     Home
                   </Button>
