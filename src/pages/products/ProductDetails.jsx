@@ -173,8 +173,9 @@ export default function ProductDetails() {
                   size="large"
                   startIcon={isPending? null : <ShoppingCartIcon />}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  disabled={isPending}
                 >
-                  {isPending ? <CircularProgress size={20} color='white' /> : 'Add to Cart'}
+                  {isPending ? <CircularProgress size={20} color='primary' /> : 'Add to Cart'}
                 </Button>
                 <Button
                   variant="outlined"
