@@ -15,8 +15,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, Container } from '@mui/material';
+import { Avatar, ButtonBase, Container } from '@mui/material';
 import useAuthStore from '../../Store/useAuthStore';
+import { useTranslation } from 'react-i18next';
 
 
 const drawerWidth = 240;
@@ -31,7 +32,7 @@ export default function Navbar(props) {
   const user = useAuthStore((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const container = window !== undefined ? () => window().document.body : undefined;
-
+  const {t,i18n} = useTranslation();
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
@@ -39,8 +40,10 @@ export default function Navbar(props) {
     Logout();
     navigate('auth/login');
   }
-  const ss = () => {
-    console.log("test")
+ 
+  const toggleLanguage = () =>{
+    const newLang = i18n.language == "ar" ? "en":"ar";
+    i18n.changeLanguage(newLang); 
   }
 
 
@@ -57,27 +60,27 @@ export default function Navbar(props) {
 
             <>
               <ListItemButton component={Link} to={`/home`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}>
-                <ListItemText primary='Home' />
+                <ListItemText primary={t('Home')} />
               </ListItemButton>
 
               <ListItemButton component={Link} to={`/cart`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/cart` ? '#c62828' : 'inherit' }}>
-                <ListItemText primary='Cart' />
+                <ListItemText primary={t('Cart')} />
               </ListItemButton>
 
 
               <ListItemButton onClick={signout} sx={{ textAlign: 'center' }}>
-                <ListItemText primary='Logout' />
+                <ListItemText primary={t('Logout')} />
               </ListItemButton>
             </>
             :
             // <ListItemButton component={Link} to={item == 'login' || item == 'register' ? `auth/${item}` : `/${item}`}  sx={{ textAlign: 'center' }}>
             <>
               <ListItemButton component={Link} to={`auth/login`} sx={{ textAlign: 'center' }}>
-                <ListItemText primary='Login' />
+                <ListItemText primary={t('Login')} />
               </ListItemButton>
 
               <ListItemButton component={Link} to={`auth/register`} sx={{ textAlign: 'center' }}>
-                <ListItemText primary='Register' />
+                <ListItemText primary={t('Register')} />
               </ListItemButton>
             </>
           }
@@ -87,9 +90,6 @@ export default function Navbar(props) {
       </List>
     </Box>
   );
-
-
-
 
 
   return (
@@ -135,7 +135,7 @@ export default function Navbar(props) {
                     // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}
                   >
-                    Home
+                    {t("Home")}
                   </Button>
 
                   <Button
@@ -144,7 +144,7 @@ export default function Navbar(props) {
                     // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/cart` ? '#c62828' : 'inherit' }}
                   >
-                    Cart
+                    {t("Cart")}
                   </Button>
 
                   <Button
@@ -152,7 +152,7 @@ export default function Navbar(props) {
                     onClick={signout}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block' }}
                   >
-                    Logout
+                    {t("Logout")}
                   </Button>
                 </>
                 :
@@ -163,7 +163,7 @@ export default function Navbar(props) {
                     // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/login` ? '#c62828' : 'inherit' }}
                   >
-                    Login
+                    {t("Login")}
                   </Button>
 
                   <Button
@@ -172,7 +172,7 @@ export default function Navbar(props) {
                     // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/register` ? '#c62828' : 'inherit' }}
                   >
-                    Register
+                    {t("Register")}
                   </Button>
                 </>
 
@@ -187,6 +187,11 @@ export default function Navbar(props) {
                 </>
                 : null}
 
+            </Box>
+            <Box>
+              <Button color='inherit' onClick={toggleLanguage} >
+                {i18n.language == "ar"?"EN":"ع"}
+              </Button>
             </Box>
           </Toolbar>
         </Container>
