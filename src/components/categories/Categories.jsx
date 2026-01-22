@@ -24,7 +24,7 @@ export default function Categories() {
           <Grid key={cat.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Link component={routerLink} underline='none'>
               <Paper elevation={3} sx={{
-                textAlign: 'center', py: 2, bgcolor: '#90caf9',
+                textAlign: 'center', py: 2,
                 transition: 'transform 0.2s',
                 "&:hover": {
                   transform: 'scale(1.05)',

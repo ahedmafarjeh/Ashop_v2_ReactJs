@@ -15,7 +15,7 @@ export default function Products() {
     return <Alert severity='error'>Error in fetching data</Alert>
   }
   return (
-    <Container sx={{ my: 5 }} maxWidth='lg'>
+    <Container sx={{ my: 5 }} maxWidth='lg' >
       <Typography variant='h3' component={"h1"} pb={3} >{t("Products")}</Typography>
 
       <Grid container spacing={2}>

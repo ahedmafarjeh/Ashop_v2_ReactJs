@@ -9,6 +9,7 @@ import SendCode from "./pages/sendCode/SendCode";
 import ResetPassword from "./pages/resetPassword/ResetPassword";
 import ProtectedRouter from "./ProtectedRouter";
 import ProductDetails from "./pages/products/ProductDetails";
+import Checkout from "./pages/checkout/Checkout";
 
 
 const router = new createBrowserRouter([
@@ -35,6 +36,10 @@ const router = new createBrowserRouter([
       {
         path: "products/:id",
         element: <ProductDetails />
+      },
+      {
+        path: "checkout",
+        element: <Checkout />
       }
     ]
   },

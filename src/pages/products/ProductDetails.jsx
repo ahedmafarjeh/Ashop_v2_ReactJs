@@ -4,8 +4,7 @@ import useProductDetails from '../../hooks/useProductDetails';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import { Alert, Box, Button, Card, CardContent, Chip, CircularProgress, Divider, Rating, Stack, Typography } from '@mui/material';
-import useFetch from '../../hooks/useFetch';
+import { Alert, Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Divider, Paper, Rating, Stack, Typography } from '@mui/material';
 import useAddToCart from '../../hooks/useAddToCart';
 
 export default function ProductDetails() {
@@ -30,7 +29,7 @@ export default function ProductDetails() {
     }
 
    return (
-    <Box className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 py-8 px-4">
+    <Box  className="min-h-screen  py-8 px-4">
       <Box className="max-w-7xl mx-auto">
 
 
@@ -40,7 +39,7 @@ export default function ProductDetails() {
             <Card className="shadow-2xl rounded-2xl overflow-hidden sticky top-4">
               <CardContent className="p-0">
                 {/* Main Image */}
-                <Box className="w-full h-96 md:h-96 bg-white flex items-center justify-center overflow-hidden">
+                <Box className="w-full h-96 md:h-96  flex items-center justify-center overflow-hidden">
                   <img
                     src={selectedImage}
                     alt={product.name}
@@ -49,20 +48,21 @@ export default function ProductDetails() {
                 </Box>
 
                 {/* Thumbnail Gallery */}
-                <Box className="p-4 bg-white flex gap-3 overflow-x-auto">
+                <Box className="p-4  flex gap-3 overflow-x-auto">
                   <Box
                     onClick={() => setSelectedImage(product.image)}
                     className={`min-w-24 h-24 border-2 rounded-lg cursor-pointer flex items-center justify-center overflow-hidden transition-all ${selectedImage === product.thumbnail ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
                       }`}
                   >
                     <img src={product.image} alt="thumb" className="w-full h-full object-cover" />
-                  </Box>
+                  </Box >
                   {product.subImages?.map((img, idx) => (
                     <Box
                       key={idx}
                       onClick={() => setSelectedImage(img)}
                       className={`min-w-24 h-24 border-2 rounded-lg cursor-pointer flex items-center justify-center overflow-hidden transition-all ${selectedImage === img ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
                         }`}
+
                     >
                       <img src={img} alt={`img-${idx}`} className="w-full h-full object-cover" />
                     </Box>
@@ -86,27 +86,27 @@ export default function ProductDetails() {
                 />
                 <Chip label={product.category} variant="outlined" />
               </Box> */}
-              <Typography variant="h4" className="font-bold text-gray-900 leading-tight">
+              <Typography variant="h4" >
                 {product.name}
               </Typography>
             </Box>
 
             {/* Rating & Reviews */}
-            <Box className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-md">
+            <Paper className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-md">
               <Box className="flex items-center gap-1">
                 <Rating value={product.rate} readOnly size="large" />
-                <Typography variant="body2" className="ml-2 font-semibold text-gray-700">
+                <Typography variant="body2" className="ml-2 font-semibold ">
                   {product.rate}/5
                 </Typography>
               </Box>
               <Divider orientation="vertical" flexItem />
-              <Typography variant="body2" className="text-gray-600">
+              <Typography variant="body2" >
                 {product.reviews?.length || 0} reviews
               </Typography>
-            </Box>
+            </Paper>
 
             {/* Price Section */}
-            <Card className="bg-linear-to-r from-blue-500 to-indigo-600 text-white shadow-lg">
+            <Card >
               <CardContent>
                 <Typography variant="body2" className="opacity-90 mb-2">
                   Special Price
@@ -130,40 +130,18 @@ export default function ProductDetails() {
             </Card>
 
             {/* Description */}
-            <Box className="bg-white p-4 rounded-xl shadow-md">
-              <Typography variant="h6" className="font-bold mb-2">
+            <Paper sx={{p:3}}>
+              <Typography variant="h6">
                 Description
               </Typography>
-              <Typography variant="body2" className="text-gray-700 leading-relaxed">
+              <Typography variant="body2" className="opacity-90">
                 {product.description}
               </Typography>
-            </Box>
+            </Paper>
 
             {/* Quantity & Actions */}
-            <Box className="bg-white p-4 rounded-xl shadow-md space-y-4">
-              <Box className="flex items-center gap-4">
-                <Typography className="font-semibold">Quantity:</Typography>
-                <Box className="flex items-center border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 text-gray-600 hover:bg-gray-100"
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-12 text-center border-0 focus:outline-none"
-                  />
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-3 py-2 text-gray-600 hover:bg-gray-100"
-                  >
-                    +
-                  </button>
-                </Box>
-              </Box>
+            <Paper className="bg-white p-4 rounded-xl shadow-md space-y-4">
+            
 
               {/* Action Buttons */}
               <Stack direction="row" spacing={2}>
@@ -186,7 +164,7 @@ export default function ProductDetails() {
                   {isFavorite ? <FavoriteIcon className="text-red-500" /> : <FavoriteBorderIcon />}
                 </Button>
               </Stack>
-            </Box>
+            </Paper>
 
             {/* Shipping & Warranty Info */}
             {/* <Box className="grid grid-cols-2 gap-3">
@@ -218,7 +196,7 @@ export default function ProductDetails() {
         </Box>
 
         {/* Reviews Section */}
-        <Box className="mt-12 bg-white rounded-2xl shadow-lg p-6">
+        <Box sx={{bgcolor:"background.paper"}} className="mt-12  rounded-2xl shadow-lg p-6">
           <Typography variant="h5" className="font-bold mb-6">
             Customer Reviews ({product.reviews?.length || 0})
           </Typography>
@@ -229,7 +207,7 @@ export default function ProductDetails() {
                 <Box key={idx} className="pb-4 border-b border-gray-200 last:border-b-0">
                   <Box className="flex items-center gap-3 mb-2">
                     <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main' }}>
-                      {review.reviewerName.charAt(0)}
+                      {review?.reviewerName?.charAt(0)}
                     </Avatar>
                     <Box>
                       <Typography variant="body2" className="font-semibold">
@@ -237,20 +215,20 @@ export default function ProductDetails() {
                       </Typography>
                       <Box className="flex items-center gap-2">
                         <Rating value={review.rating} readOnly size="small" />
-                        <Typography variant="caption" className="text-gray-500">
+                        <Typography variant="caption" >
                           {review.rating}/5
                         </Typography>
                       </Box>
                     </Box>
                   </Box>
-                  <Typography variant="body2" className="text-gray-700">
+                  <Typography variant="body2" >
                     {review.comment}
                   </Typography>
                 </Box>
               ))}
             </Stack>
           ) : (
-            <Typography variant="body2" className="text-gray-500 text-center py-8">
+            <Typography variant="body2" className=" text-center py-8">
               No reviews yet
             </Typography>
           )}

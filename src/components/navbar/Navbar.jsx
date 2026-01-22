@@ -18,6 +18,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, ButtonBase, Container } from '@mui/material';
 import useAuthStore from '../../Store/useAuthStore';
 import { useTranslation } from 'react-i18next';
+import useThemeStore from '../../Store/useThemeStore';
 
 
 const drawerWidth = 240;
@@ -30,9 +31,10 @@ export default function Navbar(props) {
   const token = useAuthStore((state) => state.token);
   const Logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
+  const { mode, toggleMode } = useThemeStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const container = window !== undefined ? () => window().document.body : undefined;
-  const {t,i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
@@ -40,10 +42,10 @@ export default function Navbar(props) {
     Logout();
     navigate('auth/login');
   }
- 
-  const toggleLanguage = () =>{
-    const newLang = i18n.language == "ar" ? "en":"ar";
-    i18n.changeLanguage(newLang); 
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language == "ar" ? "en" : "ar";
+    i18n.changeLanguage(newLang);
   }
 
 
@@ -59,7 +61,7 @@ export default function Navbar(props) {
           {token != null ?
 
             <>
-              <ListItemButton component={Link} to={`/home`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}>
+              <ListItemButton component={Link} to={`/`} sx={{ textAlign: 'center', bgcolor: currentPath.pathname === `/` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}>
                 <ListItemText primary={t('Home')} />
               </ListItemButton>
 
@@ -95,7 +97,7 @@ export default function Navbar(props) {
   return (
 
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <IconButton
@@ -131,9 +133,9 @@ export default function Navbar(props) {
                 <>
                   <Button
                     component={Link}
-                    to={'/home'}
+                    to={'/'}
                     // onClick={handleCloseNavMenu}
-                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/home` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/` || currentPath.pathname === `/` ? '#c62828' : 'inherit' }}
                   >
                     {t("Home")}
                   </Button>
@@ -190,7 +192,12 @@ export default function Navbar(props) {
             </Box>
             <Box>
               <Button color='inherit' onClick={toggleLanguage} >
-                {i18n.language == "ar"?"EN":"ع"}
+                {i18n.language == "ar" ? "EN" : "ع"}
+              </Button>
+            </Box>
+            <Box>
+              <Button color='inherit' onClick={toggleMode} >
+                {mode === "light" ? "🌙" : "☀️"}
               </Button>
             </Box>
           </Toolbar>
@@ -215,7 +222,7 @@ export default function Navbar(props) {
           {drawer}
         </Drawer>
       </nav>
-
+      <Toolbar disableGutters />
 
     </Box>
 
