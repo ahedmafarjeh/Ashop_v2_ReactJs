@@ -15,17 +15,18 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, ButtonBase, Container } from '@mui/material';
+import { Avatar, ButtonBase, Container, Menu, MenuItem, Tooltip } from '@mui/material';
 import useAuthStore from '../../Store/useAuthStore';
 import { useTranslation } from 'react-i18next';
 import useThemeStore from '../../Store/useThemeStore';
 
 
 const drawerWidth = 240;
-const pages = ['home', 'cart', 'login', 'register'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// const pages = ['home', 'cart', 'login', 'register'];
+const settings = ['Profile', "Logout"];
 export default function Navbar(props) {
   const { window } = props;
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
   const currentPath = useLocation();
   const token = useAuthStore((state) => state.token);
@@ -37,6 +38,18 @@ export default function Navbar(props) {
   const { t, i18n } = useTranslation();
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = (setting) => {
+    setAnchorElUser(null);
+    if (setting === "Logout") {
+      signout();
+    }
+    else{
+      navigate('profile');
+    }
   };
   const signout = () => {
     Logout();
@@ -149,13 +162,7 @@ export default function Navbar(props) {
                     {t("Cart")}
                   </Button>
 
-                  <Button
-
-                    onClick={signout}
-                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block' }}
-                  >
-                    {t("Logout")}
-                  </Button>
+                  
                 </>
                 :
                 <>
@@ -181,15 +188,7 @@ export default function Navbar(props) {
               }
 
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {user && token ?
-                <>
-                  <Typography variant="body1" sx={{ textTransform: 'capitalize' }}>{user.name}</Typography>
-                  <Avatar alt={user.name} >{user.name.charAt(0).toUpperCase()}</Avatar>
-                </>
-                : null}
 
-            </Box>
             <Box>
               <Button color='inherit' onClick={toggleLanguage} >
                 {i18n.language == "ar" ? "EN" : "ع"}
@@ -200,6 +199,47 @@ export default function Navbar(props) {
                 {mode === "light" ? "🌙" : "☀️"}
               </Button>
             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {user && token ?
+                <Box sx={{ flexGrow: 0 }}>
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt={user.name} >{user.name.charAt(0).toUpperCase()}</Avatar>
+                    </IconButton>
+                  </Tooltip>
+
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <MenuItem >
+                      <Typography sx={{ textAlign: 'center', cursor: "default" }}>Welcome {user.name.charAt(0).toUpperCase() + user.name.slice(1)}</Typography>
+                    </MenuItem>
+                    <Divider />
+                    {settings.map((setting) => (
+                      <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
+                        <Typography sx={{ textAlign: 'center' }}>{t(setting)}</Typography>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+
+                </Box>
+                : null}
+
+            </Box>
+            
           </Toolbar>
         </Container>
       </AppBar>

@@ -15,7 +15,8 @@ import {
   Button,
   IconButton,
   Alert,
-  Stack
+  Stack,
+  CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -43,6 +44,9 @@ export default function Cart() {
       updateCartItem({ productId, count: count + 1 });
     }
   }
+  if (isLoading) {
+    return <CircularProgress />
+  }
   // if (isMobile) {
   //   // 📱 عرض موبايل (Cards)
   //   return (
@@ -61,7 +65,7 @@ export default function Cart() {
   //   );
   // }
 
-  // 💻 عرض Desktop (Table)
+  //  عرض Desktop (Table)
   return (
 
     <Container sx={{ my: 5 }} maxWidth='lg'>

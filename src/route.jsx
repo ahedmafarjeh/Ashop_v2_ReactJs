@@ -10,6 +10,9 @@ import ResetPassword from "./pages/resetPassword/ResetPassword";
 import ProtectedRouter from "./ProtectedRouter";
 import ProductDetails from "./pages/products/ProductDetails";
 import Checkout from "./pages/checkout/Checkout";
+import ProfileLayout from "./layouts/ProfileLayout";
+import ProfileInfo from "./pages/profile/ProfileInfo";
+import ProfileOrders from "./pages/profile/ProfileOrders";
 
 
 const router = new createBrowserRouter([
@@ -19,10 +22,6 @@ const router = new createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
-      },
-      {
-        path: "home",
         element: <Home />
       },
       {
@@ -40,9 +39,24 @@ const router = new createBrowserRouter([
       {
         path: "checkout",
         element: <Checkout />
-      }
+      },
+      
     ]
   },
+  {
+        path: "/profile",
+        element: <ProfileLayout />,
+        children: [
+          {
+            index: true,
+            element: <ProfileInfo />
+          },
+          {
+            path: "orders",
+            element: <ProfileOrders />
+          }
+        ]
+      },
   {
     path: "/auth",
     element: <AuthLayout />,

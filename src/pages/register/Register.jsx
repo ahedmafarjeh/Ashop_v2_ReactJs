@@ -53,6 +53,7 @@ export default function Register() {
             error={errors?.userName} helperText={errors?.userName?.message} />
           <TextField autoComplete='off' {...register('email')} label="Email" variant="outlined" fullWidth
             error={errors?.email} helperText={errors?.email?.message} />
+            <TextField autoComplete='off' {...register('city')} label="City" variant="outlined" fullWidth />
           <TextField
             autoComplete='off'
             {...register('password')}

@@ -22,7 +22,7 @@ export function useLogin() {
       // console.log(user);
       
       login(response.data.accessToken, user);
-      navigate('/home');
+      navigate('/');
 
     },
     onError: () => {
