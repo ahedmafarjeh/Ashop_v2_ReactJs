@@ -13,6 +13,7 @@ import Checkout from "./pages/checkout/Checkout";
 import ProfileLayout from "./layouts/ProfileLayout";
 import ProfileInfo from "./pages/profile/ProfileInfo";
 import ProfileOrders from "./pages/profile/ProfileOrders";
+import Products from "./pages/products/Products";
 
 
 const router = new createBrowserRouter([
@@ -31,6 +32,10 @@ const router = new createBrowserRouter([
             <Cart />
           </ProtectedRouter>
 
+      },
+      {
+        path:"products",
+        element: <Products />
       },
       {
         path: "products/:id",

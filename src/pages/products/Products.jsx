@@ -1,54 +1,61 @@
-
 import React from 'react'
-import { useProducts } from '../../hooks/useProducts'
-import { Alert, Button, Card, CardActions, CardContent, CardMedia, CircularProgress, Container, Grid, Link, Typography } from '@mui/material';
-import { Link as routerLink } from 'react-router-dom'
+import { useProducts } from '../../hooks/useProducts';
+import { useForm } from 'react-hook-form';
+import { Alert, CircularProgress, Container, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import ProductGrid from '../../components/products/ProductGrid';
+import { useCategories } from '../../hooks/useCategories';
+import ProductFiltersForm from '../../components/products/ProductFiltersForm';
 
 export default function Products() {
-  const { isError, isLoading, data } = useProducts();
-  const {t} = useTranslation();
-  if (isLoading) {
-    return <CircularProgress />
-  }
-  if (isError) {
-    return <Alert severity='error'>Error in fetching data</Alert>
-  }
-  return (
-    <Container sx={{ my: 5 }} maxWidth='lg' >
-      <Typography variant='h3' component={"h1"} pb={3} >{t("Products")}</Typography>
+    const { t } = useTranslation();
 
-      <Grid container spacing={2}>
-        {data.response.data?.map((product) =>
-          <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Link component={routerLink} to={`/products/${product.id}`} underline='none'>
-              <Card sx={{
-                transition: 'transform 0.2s',
-                "&:hover": {
-                  transform: 'scale(1.05)',
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            search: '',
+            categoryId: '',
+            minPrice: '',
+            maxPrice: ''
+        }
+    });
+    const [activeFilters, setActiveFilters] = React.useState({});
+    const { isError, isLoading, data } = useProducts(activeFilters);
+    const { data: categoriesData } = useCategories();
+    
 
-                }
-              }}>
-                <CardMedia
-                  component={"img"}
-                  sx={{ height: 140, objectFit: 'contain' }}
-                  image={product.image}
-                  title={product.name}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {product.name}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Price:{product.price}$
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Link>
+    const applyFilters = (data) => {
+        setActiveFilters({
+            search: data.search || null,
+            categoryId: data.categoryId || null,
+            minPrice: data.minPrice || null,
+            maxPrice: data.maxPrice || null
+        });
+    }
 
-          </Grid>
-        )}
-      </Grid>
-    </Container>
-  )
+    if (isLoading) {
+        return <CircularProgress />
+    }
+    if (isError) {
+        return <Alert severity='error'>Error in fetching data</Alert>
+    }
+    return (
+        <Container sx={{ my: 5 }} maxWidth='lg' >
+            <ProductFiltersForm
+                categories={categoriesData?.response}
+                onSubmit={(values) => setActiveFilters(values)}
+            />
+            <Typography variant='h3' component={"h1"} pb={3} >{t("Products")}</Typography>
+
+            <Grid container spacing={2}>
+                {data.response.data?.length?
+                   data.response.data?.map((product) =>
+                    <ProductGrid key={product.id} product={product} />
+                )
+                :
+                 <Alert severity='info' sx={{width:"100%"}}>There are no data matches your specifications</Alert>
+            
+            }
+            </Grid>
+        </Container>
+    )
 }

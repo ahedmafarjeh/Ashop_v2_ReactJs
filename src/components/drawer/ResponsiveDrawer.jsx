@@ -16,8 +16,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
-import { InfoOutline, ShoppingCart } from '@mui/icons-material';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { InfoOutline, Logout, ShoppingCart } from '@mui/icons-material';
+import useAuthStore from '../../Store/useAuthStore';
 
 const drawerWidth = 240;
 
@@ -25,7 +26,10 @@ export default function ResponsiveDrawer() {
 //   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-
+  const {logout} = useAuthStore();
+  const navigate = useNavigate();
+  const currentPath = useLocation();
+  console.log(currentPath)
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -40,23 +44,27 @@ export default function ResponsiveDrawer() {
       setMobileOpen(!mobileOpen);
     }
   };
-
+ const signout = () =>{
+  logout();
+  navigate('/auth/login');
+ }
   const drawer = (
-    <div>
+    <Box>
       <Toolbar />
       <Divider />
       <List>
        
           <ListItem  disablePadding>
-            <ListItemButton component={Link} to="/profile">
+            <ListItemButton sx={{bgcolor: currentPath.pathname === `/profile` ? '#c62828' : 'inherit'}} component={Link} to="/profile">
               <ListItemIcon>
                 <InfoOutline />
               </ListItemIcon>
               <ListItemText primary="Info" />
             </ListItemButton>
           </ListItem>
+
           <ListItem disablePadding>
-            <ListItemButton component={Link} to="/profile/orders">
+            <ListItemButton sx={{bgcolor: currentPath.pathname === `/profile/orders` ? '#c62828' : 'inherit'}} component={Link} to="/profile/orders">
               <ListItemIcon>
                 <ShoppingCart />
               </ListItemIcon>
@@ -64,16 +72,25 @@ export default function ResponsiveDrawer() {
             </ListItemButton>
           </ListItem>
 
+           <ListItem disablePadding>
+            <ListItemButton onClick={signout} >
+              <ListItemIcon>
+                <Logout />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+
       </List>
      
-    </div>
+    </Box>
   );
 
   // Remove this const when copying and pasting into your project.
 //   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}}>
       <CssBaseline />
       <AppBar
         position="fixed"

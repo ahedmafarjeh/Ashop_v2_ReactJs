@@ -44,6 +44,9 @@ export default function Navbar(props) {
   };
   const handleCloseUserMenu = (setting) => {
     setAnchorElUser(null);
+    if(!setting){
+      return ;
+    }
     if (setting === "Logout") {
       signout();
     }
@@ -155,6 +158,15 @@ export default function Navbar(props) {
 
                   <Button
                     component={Link}
+                    to={`/products`}
+                    // onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/products` ? '#c62828' : 'inherit' }}
+                  >
+                    {t("Products")}
+                  </Button>
+
+                  <Button
+                    component={Link}
                     to={`/cart`}
                     // onClick={handleCloseNavMenu}
                     sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/cart` ? '#c62828' : 'inherit' }}
@@ -166,6 +178,14 @@ export default function Navbar(props) {
                 </>
                 :
                 <>
+                 <Button
+                    component={Link}
+                    to={`/products`}
+                    // onClick={handleCloseNavMenu}
+                    sx={{ m: 2, textAlign: 'center', color: 'white', display: 'block', bgcolor: currentPath.pathname === `/products` ? '#c62828' : 'inherit' }}
+                  >
+                    {t("Products")}
+                  </Button>
                   <Button
                     component={Link}
                     to={`auth/login`}
@@ -222,7 +242,7 @@ export default function Navbar(props) {
                       horizontal: 'right',
                     }}
                     open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
+                    onClose={()=>handleCloseUserMenu(null)}
                   >
                     <MenuItem >
                       <Typography sx={{ textAlign: 'center', cursor: "default" }}>Welcome {user.name.charAt(0).toUpperCase() + user.name.slice(1)}</Typography>

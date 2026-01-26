@@ -29,7 +29,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Cart() {
   const { isError, isLoading, data } = useCart();
-  // console.log(data)
+  console.log(data)
   const navigate = useNavigate();
   const { mutate: updateCartItem, isPending: isUpdatingCartItem } = useUpdateCartItem();
   const { mutate: removeCartItem, isPending: isRemovingCartItem } = userRemoveCartItem();
@@ -38,7 +38,10 @@ export default function Cart() {
   const handleCartUpdate = (productId, count, action) => {
 
     if (action == '-') {
-      updateCartItem({ productId, count: count - 1 });
+      if(count > 1){
+        updateCartItem({ productId, count: count - 1 });
+
+      }
     }
     else {
       updateCartItem({ productId, count: count + 1 });

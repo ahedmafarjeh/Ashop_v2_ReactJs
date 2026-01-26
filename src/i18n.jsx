@@ -31,7 +31,7 @@ i18n
         }
       }
     },
-    lng: "er", 
+    lng: "en", 
     fallbackLng: "en",
 
 
