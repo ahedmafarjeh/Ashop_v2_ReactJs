@@ -14,6 +14,7 @@ import ProfileLayout from "./layouts/ProfileLayout";
 import ProfileInfo from "./pages/profile/ProfileInfo";
 import ProfileOrders from "./pages/profile/ProfileOrders";
 import Products from "./pages/products/Products";
+import CategoryProducts from "./pages/products/CategoryProducts";
 
 
 const router = new createBrowserRouter([
@@ -40,6 +41,10 @@ const router = new createBrowserRouter([
       {
         path: "products/:id",
         element: <ProductDetails />
+      },
+      {
+        path: "products/category/:categoryId",
+        element: <CategoryProducts />
       },
       {
         path: "checkout",

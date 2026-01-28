@@ -22,7 +22,7 @@ export default function Categories() {
       <Grid container spacing={2}>
         {data.response?.map((cat) =>
           <Grid key={cat.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Link component={routerLink} underline='none'>
+            <Link component={routerLink} underline='none' to={`/products/category/${cat.id}`}>
               <Paper elevation={3} sx={{
                 textAlign: 'center', py: 2,
                 transition: 'transform 0.2s',

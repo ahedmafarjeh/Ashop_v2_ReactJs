@@ -4,32 +4,36 @@ import useProductDetails from '../../hooks/useProductDetails';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import { Alert, Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Divider, Paper, Rating, Stack, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Divider, Paper, Rating, Stack, TextField, Typography } from '@mui/material';
 import useAddToCart from '../../hooks/useAddToCart';
+import useProfile from '../../hooks/useProfile';
 
 export default function ProductDetails() {
-  const {id} = useParams();
-  const {isError, isLoading, data} = useProductDetails(id);
+  const { id } = useParams();
+  const { isError, isLoading, data } = useProductDetails(id);
+  const { isError: isProfileError, isLoading: isProfileLoading, data: profileData } = useProfile();
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
-  const {mutate: addToCart, isPending} = useAddToCart();
-
-  // console.log(data);
+  const { mutate: addToCart, isPending } = useAddToCart();
+  const canReview = false;
+  const [userRating, setUserRating] = useState(null);
+  const [comment, setComment] = useState('');
+  console.log(profileData);
   const product = data?.response;
   // console.log(product);
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedImage(product?.image);
-  },[product]);
-    if (isLoading) {
-      return <CircularProgress />
-    }
-    if (isError) {
-      return <Alert severity='error'>Error in fetching data</Alert>
-    }
+  }, [product]);
+  if (isLoading) {
+    return <CircularProgress />
+  }
+  if (isError) {
+    return <Alert severity='error'>Error in fetching data</Alert>
+  }
 
-   return (
-    <Box  className="min-h-screen  py-8 px-4">
+  return (
+    <Box className="min-h-screen  py-8 px-4">
       <Box className="max-w-7xl mx-auto">
 
 
@@ -130,7 +134,7 @@ export default function ProductDetails() {
             </Card>
 
             {/* Description */}
-            <Paper sx={{p:3}}>
+            <Paper sx={{ p: 3 }}>
               <Typography variant="h6">
                 Description
               </Typography>
@@ -141,15 +145,15 @@ export default function ProductDetails() {
 
             {/* Quantity & Actions */}
             <Paper className="bg-white p-4 rounded-xl shadow-md space-y-4">
-            
+
 
               {/* Action Buttons */}
               <Stack direction="row" spacing={2}>
                 <Button
-                onClick={()=> addToCart({productId: product.id, Count: quantity})}
+                  onClick={() => addToCart({ productId: product.id, Count: quantity })}
                   variant="contained"
                   size="large"
-                  startIcon={isPending? null : <ShoppingCartIcon />}
+                  startIcon={isPending ? null : <ShoppingCartIcon />}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   disabled={isPending}
                 >
@@ -195,8 +199,49 @@ export default function ProductDetails() {
           </Box>
         </Box>
 
+        {canReview && (
+          <Paper className="mb-8 p-6 rounded-2xl shadow-md">
+            <Typography variant="h6" className="mb-4 font-semibold">
+              Add Your Review
+            </Typography>
+
+            <Stack spacing={3}>
+              <Box>
+                <Typography variant="body2" className="mb-1">
+                  Your Rating
+                </Typography>
+                <Rating
+                  value={userRating}
+                  size="large"
+                  onChange={(e, value) => setUserRating(value)}
+                />
+              </Box>
+
+              <TextField
+                multiline
+                rows={4}
+                placeholder="Write your experience with this product..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                fullWidth
+              />
+
+              <Button
+                variant="contained"
+                size="large"
+                className="self-end bg-blue-600 hover:bg-blue-700"
+                // onClick={handleSubmitReview}
+                disabled={!userRating || !comment}
+              >
+                Submit Review
+              </Button>
+            </Stack>
+          </Paper>
+        )}
+
+
         {/* Reviews Section */}
-        <Box sx={{bgcolor:"background.paper"}} className="mt-12  rounded-2xl shadow-lg p-6">
+        <Box sx={{ bgcolor: "background.paper" }} className="mt-12  rounded-2xl shadow-lg p-6">
           <Typography variant="h5" className="font-bold mb-6">
             Customer Reviews ({product.reviews?.length || 0})
           </Typography>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useCart from '../../hooks/useCart'
 import {
   Box,
@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function Checkout() {
-  const [paymentMethod, setPaymentMethod] = React.useState('cash');
+  const [paymentMethod, setPaymentMethod] = useState('cash');
   const navigate = useNavigate();
   const { isError, isLoading, data } = useCart();
   const {mutate: checkoutMutate, isPending: isCheckoutPending, isError: isCheckoutError} = useCheckout();
