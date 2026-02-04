@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useProducts } from '../../hooks/useProducts';
 import { useForm } from 'react-hook-form';
-import { Alert, CircularProgress, Container, Grid, Typography } from '@mui/material';
+import { Alert, CircularProgress, Container, Grid, Pagination, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProductGrid from '../../components/products/ProductGrid';
 import { useCategories } from '../../hooks/useCategories';
@@ -10,27 +10,14 @@ import ProductFiltersForm from '../../components/products/ProductFiltersForm';
 export default function Products() {
     const { t } = useTranslation();
 
-    const { register, handleSubmit } = useForm({
-        defaultValues: {
-            search: '',
-            categoryId: '',
-            minPrice: '',
-            maxPrice: ''
-        }
-    });
-    const [activeFilters, setActiveFilters] = React.useState({});
-    const { isError, isLoading, data } = useProducts(activeFilters);
-    const { data: categoriesData } = useCategories();
-    
+    const [page, setPage] = useState(1);
+    const limit = 6;
+    const [activeFilters, setActiveFilters] = useState({});
+    const { isError, isLoading, data } = useProducts(activeFilters, page, limit);
+    const totalPages = Math.ceil(data?.response?.totalCount / limit);
 
-    const applyFilters = (data) => {
-        setActiveFilters({
-            search: data.search || null,
-            categoryId: data.categoryId || null,
-            minPrice: data.minPrice || null,
-            maxPrice: data.maxPrice || null
-        });
-    }
+    const { data: categoriesData } = useCategories();
+
 
     if (isLoading) {
         return <CircularProgress />
@@ -42,20 +29,34 @@ export default function Products() {
         <Container sx={{ my: 5 }} maxWidth='lg' >
             <ProductFiltersForm
                 categories={categoriesData?.response}
-                onSubmit={(values) => setActiveFilters(values)}
+                onSubmit={(values) => {
+                    setActiveFilters(values);
+                    setPage(1);
+                }}
             />
             <Typography variant='h3' component={"h1"} pb={3} >{t("Products")}</Typography>
 
             <Grid container spacing={2}>
-                {data.response.data?.length?
-                   data.response.data?.map((product) =>
-                    <ProductGrid key={product.id} product={product} />
-                )
-                :
-                 <Alert severity='info' sx={{width:"100%"}}>There are no data matches your specifications</Alert>
-            
-            }
+                {data.response.data?.length ?
+                    data.response.data?.map((product) =>
+                        <ProductGrid key={product.id} product={product} />
+                    )
+                    :
+                    <Alert severity='info' sx={{ width: "100%" }}>There are no data matches your specifications</Alert>
+
+                }
             </Grid>
+
+            {totalPages > 1 && (
+                <Stack alignItems="center" mt={4}>
+                    <Pagination
+                        page={page}
+                        count={totalPages}
+                        onChange={(_, value) => setPage(value)}
+                        color="primary"
+                    />
+                </Stack>
+            )}
         </Container>
     )
 }

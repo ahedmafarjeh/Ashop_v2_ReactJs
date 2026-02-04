@@ -1,3 +1,5 @@
+// 
+
 import {
   Box,
   TextField,
@@ -14,16 +16,14 @@ export default function ProductFiltersForm({
   categories = [],
   onSubmit,
 }) {
-  const {
-    control,
-    handleSubmit,
-    reset,
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       search: "",
       categoryId: "",
       minPrice: "",
       maxPrice: "",
+      sortBy: "",
+      ascending: true,
     },
   });
 
@@ -37,22 +37,16 @@ export default function ProductFiltersForm({
       categoryId: "",
       minPrice: "",
       maxPrice: "",
+      sortBy: "",
+      ascending: true,
     };
     reset(empty);
     onSubmit(empty);
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(submitHandler)}
-      sx={{ mb: 3 }}
-    >
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={2}
-        alignItems="center"
-      >
+    <Box component="form" onSubmit={handleSubmit(submitHandler)} sx={{ mb: 3 }}>
+      <Box sx={{mb:2}}>
         {/* Search */}
         <Controller
           name="search"
@@ -61,9 +55,16 @@ export default function ProductFiltersForm({
             <TextField {...field} label="Search" fullWidth />
           )}
         />
+      </Box>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        alignItems="center"
+        flexWrap="wrap"
+      >
 
         {/* Category */}
-        <FormControl sx={{ minWidth: 200 }}>
+        <FormControl sx={{ minWidth: 180 }}>
           <InputLabel>Category</InputLabel>
           <Controller
             name="categoryId"
@@ -86,12 +87,7 @@ export default function ProductFiltersForm({
           name="minPrice"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              label="Min Price"
-              type="number"
-              sx={{ width: 140 }}
-            />
+            <TextField {...field} label="Min Price" type="number" sx={{ width: 130 }} />
           )}
         />
 
@@ -100,14 +96,45 @@ export default function ProductFiltersForm({
           name="maxPrice"
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              label="Max Price"
-              type="number"
-              sx={{ width: 140 }}
-            />
+            <TextField {...field} label="Max Price" type="number" sx={{ width: 130 }} />
           )}
         />
+
+        {/* Sort By */}
+        <FormControl sx={{ minWidth: 160 }}>
+          <InputLabel>Sort By</InputLabel>
+          <Controller
+            name="sortBy"
+            control={control}
+            render={({ field }) => (
+              <Select {...field} label="Sort By">
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="price">Price</MenuItem>
+                <MenuItem value="name">Name</MenuItem>
+              </Select>
+            )}
+          />
+        </FormControl>
+
+        {/* Ascending / Descending */}
+        <FormControl sx={{ minWidth: 160 }}>
+          <InputLabel>Order</InputLabel>
+          <Controller
+            name="ascending"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label="Order"
+                onChange={(e) => field.onChange(e.target.value === "true")}
+                value={String(field.value)}
+              >
+                <MenuItem value="true">Ascending</MenuItem>
+                <MenuItem value="false">Descending</MenuItem>
+              </Select>
+            )}
+          />
+        </FormControl>
 
         <Button type="submit" variant="contained">
           Apply
