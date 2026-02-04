@@ -24,6 +24,7 @@ import { useTheme } from '@mui/material/styles';
 import useUpdateCartItem from '../../hooks/useUpdateCartItem';
 import userRemoveCartItem from '../../hooks/userRemoveCartItem';
 import { useNavigate } from 'react-router-dom';
+import useClearCart from '../../hooks/useClearCart';
 
 
 
@@ -33,12 +34,13 @@ export default function Cart() {
   const navigate = useNavigate();
   const { mutate: updateCartItem, isPending: isUpdatingCartItem } = useUpdateCartItem();
   const { mutate: removeCartItem, isPending: isRemovingCartItem } = userRemoveCartItem();
+  const {mutate: clearCart, isPending: isClearingCart} = useClearCart();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const handleCartUpdate = (productId, count, action) => {
 
     if (action == '-') {
-      if(count > 1){
+      if (count > 1) {
         updateCartItem({ productId, count: count - 1 });
 
       }
@@ -46,6 +48,11 @@ export default function Cart() {
     else {
       updateCartItem({ productId, count: count + 1 });
     }
+  }
+  const handleClearCart = () => {
+    const productsIds = data.items.map(item => item.productId);
+    console.log(productsIds)
+    clearCart(productsIds);
   }
   if (isLoading) {
     return <CircularProgress />
@@ -73,7 +80,7 @@ export default function Cart() {
 
     <Container sx={{ my: 5 }} maxWidth='lg'>
       {data?.items.length == 0 ?
-        <Alert severity="info" sx={{ mt: 5 , display: 'flex',alignItems: 'center', justifyContent: 'center'}}>
+        <Alert severity="info" sx={{ mt: 5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Stack direction="row" alignItems="center">
             <Typography>Your cart is empty.</Typography>
             <Button onClick={() => navigate("/")} color="primary">Go Shopping</Button>
@@ -171,6 +178,15 @@ export default function Cart() {
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button onClick={() => navigate("/checkout")} variant='contained' color='primary' sx={{ mt: 3, flexGrow: 1 }}>Checkout</Button>
             <Button onClick={() => navigate("/")} variant='outlined' color='secondary' sx={{ mt: 3, flexGrow: 1 }}>Continue Shoping</Button>
+            <Button
+              onClick={handleClearCart}
+              disabled={isClearingCart}
+              variant='outlined'
+              color='error'
+              sx={{ mt: 3, flexGrow: 1 }}
+            >
+              Clear Cart
+            </Button>
 
           </Box>
         </>

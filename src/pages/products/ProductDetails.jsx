@@ -7,21 +7,37 @@ import FavoriteIcon from '@mui/icons-material/Favorite'
 import { Alert, Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Divider, Paper, Rating, Stack, TextField, Typography } from '@mui/material';
 import useAddToCart from '../../hooks/useAddToCart';
 import useProfile from '../../hooks/useProfile';
+import useAddReview from '../../hooks/useAddReview';
+import { Controller, useForm } from 'react-hook-form';
 
 export default function ProductDetails() {
   const { id } = useParams();
   const { isError, isLoading, data } = useProductDetails(id);
   const { isError: isProfileError, isLoading: isProfileLoading, data: profileData } = useProfile();
+  const { mutate: addReview, isPending: isReviewPending, isError: isReviewError, error: reviewError } = useAddReview();
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const { mutate: addToCart, isPending } = useAddToCart();
-  const canReview = false;
+  const { control, handleSubmit, register, reset, } = useForm({
+    defaultValues: {
+      rating: 0,
+      comment: ''
+    }
+  });
+
   const [userRating, setUserRating] = useState(null);
   const [comment, setComment] = useState('');
   console.log(profileData);
   const product = data?.response;
   // console.log(product);
+  const handleSubmitReview = (formData) => {
+    addReview({
+      productId: product.id,
+      rating: formData.rating,
+      comment: formData.comment
+    });
+  }
   useEffect(() => {
     setSelectedImage(product?.image);
   }, [product]);
@@ -199,45 +215,57 @@ export default function ProductDetails() {
           </Box>
         </Box>
 
-        {canReview && (
-          <Paper className="mb-8 p-6 rounded-2xl shadow-md">
-            <Typography variant="h6" className="mb-4 font-semibold">
-              Add Your Review
-            </Typography>
+        {/* Add Review Section */}
+        {isReviewError && <Alert severity='error' className="mt-6">{reviewError?.response?.data?.message || 'Failed to submit review'}</Alert>}
+        <Paper component="form" onSubmit={handleSubmit(handleSubmitReview)} className="mb-8 mt-3 p-6 rounded-2xl shadow-md">
+          <Typography variant="h6" className="mb-4 font-semibold">
+            Add Your Review
+          </Typography>
 
-            <Stack spacing={3}>
-              <Box>
-                <Typography variant="body2" className="mb-1">
-                  Your Rating
-                </Typography>
-                <Rating
-                  value={userRating}
-                  size="large"
-                  onChange={(e, value) => setUserRating(value)}
-                />
-              </Box>
-
-              <TextField
-                multiline
-                rows={4}
-                placeholder="Write your experience with this product..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                fullWidth
+          <Stack spacing={3}>
+            <Box>
+              <Typography variant="body2" className="mb-1">
+                Your Rating
+              </Typography>
+              <Controller
+                name="rating"
+                control={control}
+                rules={{
+                  required: 'Rating is required',
+                  min: { value: 1, message: 'Rating must be at least 1' }
+                }}
+                render={({ field }) => (
+                  <Rating
+                    {...field}
+                    size="large"
+                    value={field.value}
+                    onChange={(_, value) => field.onChange(value)}
+                  />
+                )}
               />
+            </Box>
 
-              <Button
-                variant="contained"
-                size="large"
-                className="self-end bg-blue-600 hover:bg-blue-700"
-                // onClick={handleSubmitReview}
-                disabled={!userRating || !comment}
-              >
-                Submit Review
-              </Button>
-            </Stack>
-          </Paper>
-        )}
+            <TextField
+              multiline
+              rows={4}
+              placeholder="Write your experience with this product..."
+              fullWidth
+              {...register("comment")}
+            />
+
+            <Button
+            type='submit'
+              variant="contained"
+              size="large"
+              className="self-end bg-blue-600 hover:bg-blue-700"
+              // onClick={handleSubmitReview}
+              disabled={ isReviewPending}
+            >
+              {isReviewPending ? <CircularProgress size={20} color='inherit' /> : 'Submit Review'}
+            </Button>
+          </Stack>
+        </Paper>
+
 
 
         {/* Reviews Section */}
