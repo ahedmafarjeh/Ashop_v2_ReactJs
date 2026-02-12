@@ -245,7 +245,7 @@ export default function Navbar(props) {
                     onClose={()=>handleCloseUserMenu(null)}
                   >
                     <MenuItem >
-                      <Typography sx={{ textAlign: 'center', cursor: "default" }}>Welcome {user.name.charAt(0).toUpperCase() + user.name.slice(1)}</Typography>
+                      <Typography sx={{ textAlign: 'center', cursor: "default" }}>{t("WLC")} {user.name.charAt(0).toUpperCase() + user.name.slice(1)}</Typography>
                     </MenuItem>
                     <Divider />
                     {settings.map((setting) => (

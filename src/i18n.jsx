@@ -15,7 +15,10 @@ i18n
            "Login": "Login",
            "Register":"Register",
            "Logout":"Logout",
-           "Cart": "Cart"
+           "Cart": "Cart",
+           "Info": "Info",
+            "Orders": "Orders",
+            "Profile": "Profile"
         }
       },
        ar: {
@@ -27,7 +30,10 @@ i18n
            "Login": "تسجيل الدخول",
            "Register":"تسجيل",
            "Logout":"تسجيل الخروج",
-           "Cart": "السلة"
+           "Cart": "السلة",
+            "Info": "المعلومات",
+            "Orders": "الطلبات",
+            "Profile": "الملف الشخصي"
         }
       }
     },
